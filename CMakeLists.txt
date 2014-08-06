@@ -22,3 +22,10 @@ add_library(clew src/clew.c include/clew.h)
 
 add_executable(testclew clewTest/clewTest.cpp include/clew.h)
 target_link_libraries(testclew clew ${CMAKE_DL_LIBS})
+
+install(TARGETS clew
+  LIBRARY DESTINATION lib COMPONENT libraries
+  ARCHIVE DESTINATION lib/static COMPONENT libraries)
+
+INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/include/clew.h
+  DESTINATION include/CL)
