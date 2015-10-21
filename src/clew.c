@@ -302,6 +302,7 @@ int clewInit()
 
 const char* clewErrorString(cl_int error)
 {
+    static const char* string_unknown = "";
     static const char* strings[] =
     {
         // Error Codes
@@ -376,7 +377,138 @@ const char* clewErrorString(cl_int error)
         , "CL_INVALID_COMPILER_OPTIONS"                 //  -66
         , "CL_INVALID_LINKER_OPTIONS"                   //  -67
         , "CL_INVALID_DEVICE_PARTITION_COUNT"           //  -68
+        , "CL_INVALID_PIPE_SIZE"                        //  -69
+        , "CL_INVALID_DEVICE_QUEUE"                     //  -70
+    };
+    static const char* strings_ext[] =
+    {
+        // Error Codes (thrown by extensions)
+          "CL_INVALID_GL_SHAREGROUP_REFERENCE_KHR"      //  -1000
+        , "CL_PLATFORM_NOT_FOUND_KHR"                   //  -1001
+        , "CL_INVALID_D3D10_DEVICE_KHR"                 //  -1002
+        , "CL_INVALID_D3D10_RESOURCE_KHR"               //  -1003
+        , "CL_D3D10_RESOURCE_ALREADY_ACQUIRED_KHR"      //  -1004
+        , "CL_D3D10_RESOURCE_NOT_ACQUIRED_KHR"          //  -1005
+        , "CL_INVALID_D3D11_DEVICE_KHR"                 //  -1006
+        , "CL_INVALID_D3D11_RESOURCE_KHR"               //  -1007
+        , "CL_D3D11_RESOURCE_ALREADY_ACQUIRED_KHR"      //  -1008
+        , "CL_D3D11_RESOURCE_NOT_ACQUIRED_KHR"          //  -1009
+        , "CL_INVALID_DX9_MEDIA_ADAPTER_KHR"            //  -1010
+        , "CL_INVALID_DX9_MEDIA_SURFACE_KHR"            //  -1011
+        , "CL_DX9_MEDIA_SURFACE_ALREADY_ACQUIRED_KHR"   //  -1012
+        , "CL_DX9_MEDIA_SURFACE_NOT_ACQUIRED_KHR"       //  -1013
+
+        , ""    //  -1014
+        , ""    //  -1015
+        , ""    //  -1016
+        , ""    //  -1017
+        , ""    //  -1018
+        , ""    //  -1019
+        , ""    //  -1020
+        , ""    //  -1021
+        , ""    //  -1022
+        , ""    //  -1023
+        , ""    //  -1024
+        , ""    //  -1025
+        , ""    //  -1026
+        , ""    //  -1027
+        , ""    //  -1028
+        , ""    //  -1029
+        , ""    //  -1030
+        , ""    //  -1031
+        , ""    //  -1032
+        , ""    //  -1033
+        , ""    //  -1034
+        , ""    //  -1035
+        , ""    //  -1036
+        , ""    //  -1037
+        , ""    //  -1038
+        , ""    //  -1039
+        , ""    //  -1040
+        , ""    //  -1041
+        , ""    //  -1042
+        , ""    //  -1043
+        , ""    //  -1044
+        , ""    //  -1045
+        , ""    //  -1046
+        , ""    //  -1047
+        , ""    //  -1048
+        , ""    //  -1049
+        , ""    //  -1050
+        , ""    //  -1051
+        , ""    //  -1052
+        , ""    //  -1053
+        , ""    //  -1054
+        , ""    //  -1055
+        , ""    //  -1056
+
+        , "CL_DEVICE_PARTITION_FAILED_EXT"              //  -1057
+        , "CL_INVALID_PARTITION_COUNT_EXT"              //  -1058
+        , "CL_INVALID_PARTITION_NAME_EXT"               //  -1059
+        , "CL_INVALID_ARG_NAME_APPLE"                   //  -1060
+
+        , ""    //  -1061
+        , ""    //  -1062
+        , ""    //  -1063
+        , ""    //  -1064
+        , ""    //  -1065
+        , ""    //  -1066
+        , ""    //  -1067
+        , ""    //  -1068
+        , ""    //  -1069
+        , ""    //  -1070
+        , ""    //  -1071
+        , ""    //  -1072
+        , ""    //  -1073
+        , ""    //  -1074
+        , ""    //  -1075
+        , ""    //  -1076
+        , ""    //  -1077
+        , ""    //  -1078
+        , ""    //  -1079
+        , ""    //  -1080
+        , ""    //  -1081
+        , ""    //  -1082
+        , ""    //  -1083
+        , ""    //  -1084
+        , ""    //  -1085
+        , ""    //  -1086
+        , ""    //  -1087
+        , ""    //  -1088
+        , ""    //  -1089
+        , ""    //  -1090
+        , ""    //  -1091
+
+        , "CL_EGL_RESOURCE_NOT_ACQUIRED_KHR"            //  -1092
+        , "CL_INVALID_EGL_OBJECT_KHR"                   //  -1093
+        , "CL_INVALID_ACCELERATOR_INTEL"                //  -1094
+        , "CL_INVALID_ACCELERATOR_TYPE_INTEL"           //  -1095
+        , "CL_INVALID_ACCELERATOR_DESCRIPTOR_INTEL"     //  -1096
+        , "CL_ACCELERATOR_TYPE_NOT_SUPPORTED_INTEL"     //  -1097
+        , "CL_INVALID_VA_API_MEDIA_ADAPTER_INTEL"       //  -1098
+        , "CL_INVALID_VA_API_MEDIA_SURFACE_INTEL"       //  -1099
+        , "CL_VA_API_MEDIA_SURFACE_ALREADY_ACQUIRED_INTEL" //  -1100
+        , "CL_VA_API_MEDIA_SURFACE_NOT_ACQUIRED_INTEL"  //  -1101
     };
 
-    return strings[-error];
+    if (error > -1000)
+    {
+        cl_int index = -error;
+        if (index < sizeof(strings) / sizeof(*strings))
+        {
+            return strings[index];
+        }
+        return string_unknown;
+    }
+    else if (error > -2000)
+    {
+        cl_int index = -(error + 1000);
+        if (index < sizeof(strings_ext) / sizeof(*strings_ext))
+        {
+            return strings_ext[index];
+        }
+        return string_unknown;
+    }
+
+    return string_unknown;
 }
